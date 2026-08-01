@@ -55,6 +55,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Start Cloudflare TCP Proxy
+        run: |
+          cloudflared access tcp --hostname ssh-cloud.26i.uk --url 127.0.0.1:6443 --service-token-id ${{ secrets.CF_CLIENT_ID }} --service-token-secret ${{ secrets.CF_CLIENT_SECRET }} &
+          sleep 3
+
       - name: Set up kubectl
         uses: azure/setup-kubectl@v3
         with:
@@ -65,11 +75,14 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
           chmod 600 ~/.kube/config
+          # Rewrite KUBECONFIG to use the local tunnel and disable TLS verification since hostname won't match 127.0.0.1
+          sed -i 's|https://192.168.8.106:6443|https://127.0.0.1:6443|g' ~/.kube/config
+          sed -i 's|certificate-authority-data:.*|insecure-skip-tls-verify: true|g' ~/.kube/config
 
       - name: Update deployment with new image tags
         run: |
-          sed -i 's|ghcr.io/khalilksa33/al-diwan-backend:latest|ghcr.io/khalilksa33/al-diwan-backend:${{ github.sha }}|g' k8s/deployment.yaml
-          sed -i 's|ghcr.io/khalilksa33/al-diwan-frontend:latest|ghcr.io/khalilksa33/al-diwan-frontend:${{ github.sha }}|g' k8s/deployment.yaml
+          sed -i 's|ghcr.io/khalilksa33/al-diwan-backend:.*|ghcr.io/khalilksa33/al-diwan-backend:${{ github.sha }}|g' k8s/deployment.yaml
+          sed -i 's|ghcr.io/khalilksa33/al-diwan-frontend:.*|ghcr.io/khalilksa33/al-diwan-frontend:${{ github.sha }}|g' k8s/deployment.yaml
 
       - name: Apply Kubernetes manifests
         run: kubectl apply -f k8s/
