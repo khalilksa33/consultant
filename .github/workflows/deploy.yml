@@ -60,34 +60,33 @@ jobs:
           curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
           sudo dpkg -i cloudflared.deb
 
-      - name: Start Cloudflare TCP Proxy
-        run: |
-          cloudflared access tcp --hostname ssh-cloud.26i.uk --url 127.0.0.1:6443 --service-token-id ${{ secrets.CF_CLIENT_ID }} --service-token-secret ${{ secrets.CF_CLIENT_SECRET }} &
-          sleep 3
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Configure kubectl
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > ~/.kube/config
-          chmod 600 ~/.kube/config
-          # Rewrite KUBECONFIG to use the local tunnel and disable TLS verification since hostname won't match 127.0.0.1
-          sed -i 's|https://192.168.8.106:6443|https://127.0.0.1:6443|g' ~/.kube/config
-          sed -i 's|certificate-authority-data:.*|insecure-skip-tls-verify: true|g' ~/.kube/config
-
       - name: Update deployment with new image tags
         run: |
           sed -i 's|ghcr.io/khalilksa33/al-diwan-backend:.*|ghcr.io/khalilksa33/al-diwan-backend:${{ github.sha }}|g' k8s/deployment.yaml
           sed -i 's|ghcr.io/khalilksa33/al-diwan-frontend:.*|ghcr.io/khalilksa33/al-diwan-frontend:${{ github.sha }}|g' k8s/deployment.yaml
 
-      - name: Apply Kubernetes manifests
-        run: kubectl apply -f k8s/
-
-      - name: Verify rollout status
+      - name: Configure SSH and Deploy
+        env:
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          CF_ID: ${{ secrets.CF_CLIENT_ID }}
+          CF_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
+          SSH_USER: ${{ secrets.SSH_USERNAME }}
         run: |
-          kubectl rollout status deployment/al-diwan-backend
-          kubectl rollout status deployment/al-diwan-frontend
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          
+          # Setup SSH to use Cloudflare proxy
+          cat << EOF > ~/.ssh/config
+          Host ssh-cloud.26i.uk
+            ProxyCommand cloudflared access ssh --hostname %h --service-token-id $CF_ID --service-token-secret $CF_SECRET
+            StrictHostKeyChecking no
+            User $SSH_USER
+          EOF
+          
+          # Stream the updated yaml file to kubectl on Host C over SSH
+          cat k8s/deployment.yaml | ssh ssh-cloud.26i.uk "kubectl apply -f -"
+          
+          # Verify rollouts
+          ssh ssh-cloud.26i.uk "kubectl rollout status deployment/al-diwan-backend"
+          ssh ssh-cloud.26i.uk "kubectl rollout status deployment/al-diwan-frontend"
