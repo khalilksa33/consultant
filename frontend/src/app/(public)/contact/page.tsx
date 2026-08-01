@@ -1,0 +1,85 @@
+export default function ContactPage() {
+  return (
+    <div className="py-20 bg-brand-ivory min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-brand-teal mb-4">تواصل معنا</h1>
+          <div className="w-24 h-1 bg-brand-orange mx-auto mb-6"></div>
+          <p className="text-brand-slate/80 text-lg max-w-2xl mx-auto">
+            نحن هنا للرد على استفساراتكم وتلبية طلباتكم. لا تترددوا في التواصل معنا عبر النموذج أدناه أو باستخدام معلومات الاتصال.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          {/* Contact Info */}
+          <div>
+            <div className="bg-white p-8 rounded-lg shadow-sm h-full">
+              <h2 className="text-2xl font-bold text-brand-teal mb-8">معلومات الاتصال</h2>
+              <div className="space-y-6 text-brand-slate">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-brand-mist rounded-full flex items-center justify-center shrink-0">
+                    📍
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">العنوان</h3>
+                    <p className="opacity-80">الرياض، المملكة العربية السعودية<br />شارع العليا العام</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-brand-mist rounded-full flex items-center justify-center shrink-0">
+                    ✉️
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">البريد الإلكتروني</h3>
+                    <p className="opacity-80">info@26i-consult.com</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-brand-mist rounded-full flex items-center justify-center shrink-0">
+                    📞
+                  </div>
+                  <div>
+                    <h3 className="font-bold mb-1">رقم الهاتف</h3>
+                    <p className="opacity-80" dir="ltr">+966 50 000 0000</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Contact Form */}
+          <div>
+            <form className="bg-white p-8 rounded-lg shadow-sm space-y-6">
+              <h2 className="text-2xl font-bold text-brand-teal mb-6">أرسل رسالة</h2>
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-brand-slate mb-2">الاسم الكريم</label>
+                <input type="text" id="name" className="w-full px-4 py-3 rounded border border-brand-mist focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none transition-all bg-brand-ivory/30" placeholder="أدخل اسمك" required />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-brand-slate mb-2">البريد الإلكتروني</label>
+                <input type="email" id="email" className="w-full px-4 py-3 rounded border border-brand-mist focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none transition-all bg-brand-ivory/30" placeholder="your@email.com" required dir="ltr" />
+              </div>
+              <div>
+                <label htmlFor="service" className="block text-sm font-medium text-brand-slate mb-2">نوع الخدمة</label>
+                <select id="service" className="w-full px-4 py-3 rounded border border-brand-mist focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none transition-all bg-brand-ivory/30">
+                  <option value="">اختر الخدمة المطلوبة</option>
+                  <option value="design">التصميم المعماري والإنشائي</option>
+                  <option value="supervision">الإشراف الهندسي</option>
+                  <option value="license">إصدار التراخيص</option>
+                  <option value="other">أخرى</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-brand-slate mb-2">رسالتك</label>
+                <textarea id="message" rows={4} className="w-full px-4 py-3 rounded border border-brand-mist focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none transition-all bg-brand-ivory/30 resize-none" placeholder="كيف يمكننا مساعدتك؟" required></textarea>
+              </div>
+              <button type="submit" className="w-full bg-brand-orange text-white font-bold py-3 px-4 rounded hover:bg-opacity-90 transition-colors shadow-sm">
+                إرسال الرسالة
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: al-diwan-backend
+  labels:
+    app: al-diwan-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: al-diwan-backend
+  template:
+    metadata:
+      labels:
+        app: al-diwan-backend
+    spec:
+      containers:
+      - name: backend
+        image: registry.example.com/al-diwan-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - secretRef:
+            name: al-diwan-backend-secrets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: al-diwan-frontend
+  labels:
+    app: al-diwan-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: al-diwan-frontend
+  template:
+    metadata:
+      labels:
+        app: al-diwan-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: registry.example.com/al-diwan-frontend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NEXT_PUBLIC_API_URL
+          value: "http://al-diwan-backend-service:5000"
