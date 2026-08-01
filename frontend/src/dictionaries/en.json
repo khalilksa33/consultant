@@ -1,0 +1,52 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "services": "Services",
+    "contact": "Contact Us",
+    "clientPortal": "Client Portal",
+    "adminPortal": "Admin Dashboard",
+    "language": "العربية"
+  },
+  "home": {
+    "title": "26i ",
+    "titleHighlight": "Engineering Consultations",
+    "subtitle": "We build trust by providing professional, reliable, and modern engineering services that meet the aspirations of individuals, companies, and real estate developers.",
+    "cta1": "Request a Service Now",
+    "cta2": "Explore Our Services",
+    "servicesTitle": "Core Services",
+    "services": [
+      {
+        "title": "Design & Supervision",
+        "desc": "We provide architectural and structural design services with full supervision of implementation to ensure the highest quality standards."
+      },
+      {
+        "title": "Permit Issuance",
+        "desc": "Facilitating and issuing all necessary engineering permits for projects from the competent authorities."
+      },
+      {
+        "title": "Project Management",
+        "desc": "Comprehensive management of engineering projects to ensure delivery on time and within the approved budget."
+      }
+    ]
+  },
+  "about": {
+    "title": "About Us",
+    "description": "We are a leading company in the field of engineering consultations..."
+  },
+  "services": {
+    "title": "Our Services",
+    "design": "Architectural Design",
+    "supervision": "Engineering Supervision"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Submit"
+  },
+  "footer": {
+    "rights": "All rights reserved © 2026 for 26i Engineering Consultations"
+  }
+}
