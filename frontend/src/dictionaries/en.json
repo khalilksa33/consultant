@@ -97,6 +97,13 @@
     "adminTitle": "Admin Dashboard",
     "adminWelcome": "Welcome to the 26i Engineering Consultations admin dashboard."
   },
+  "auth": {
+    "login": "Login",
+    "email": "Email Address",
+    "password": "Password",
+    "submit": "Sign In",
+    "error": "Invalid email or password"
+  },
   "footer": {
     "rights": "All rights reserved © 2026 for 26i Engineering Consultations"
   }

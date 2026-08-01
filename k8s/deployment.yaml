@@ -20,6 +20,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
+        env:
+        - name: MONGODB_URI
+          value: "mongodb://mongodb:27017/al_diwan"
+        - name: JWT_SECRET
+          value: "super_secret_jwt_key_26i_consulting_app"
 ---
 apiVersion: v1
 kind: Service
