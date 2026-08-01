@@ -32,19 +32,70 @@
   },
   "about": {
     "title": "About Us",
-    "description": "We are a leading company in the field of engineering consultations..."
+    "subtitle": "About 26i Engineering Consultations",
+    "p1": "We are a leading company in the field of engineering consultations, always striving to provide innovative and sustainable solutions that meet the aspirations of our clients. We combine deep-rooted experience with the latest technologies to ensure the success of every project we undertake.",
+    "p2": "The company was founded on the principles of quality, accuracy, and transparency, making us a trusted partner for many individuals, companies, and real estate developers in the Kingdom of Saudi Arabia.",
+    "visionTitle": "Our Vision",
+    "visionDesc": "To be the first choice in providing integrated engineering consultations and to contribute to the renaissance and development of the urban sector with global standards.",
+    "missionTitle": "Our Mission",
+    "missionDesc": "Providing high-quality engineering services through a professional and passionate team, to build sustainable trust with all our clients."
   },
   "services": {
-    "title": "Our Services",
-    "design": "Architectural Design",
-    "supervision": "Engineering Supervision"
+    "title": "Our Engineering Services",
+    "subtitle": "We offer a comprehensive range of engineering services that meet all your needs and ensure the success of your project from concept to delivery.",
+    "request": "Request Service",
+    "list": [
+      {
+        "title": "Architectural & Structural Design",
+        "description": "We provide innovative and practical designs that consider aesthetics and functionality according to the latest engineering codes."
+      },
+      {
+        "title": "Engineering Supervision",
+        "description": "Strict supervision of all stages of implementation to ensure that the work conforms to the plans and specifications."
+      },
+      {
+        "title": "Permit Issuance",
+        "description": "Facilitating and issuing engineering and building permits from government agencies quickly and efficiently."
+      },
+      {
+        "title": "Project Management",
+        "description": "Planning, organizing, and managing resources to ensure project success within the timeframe and budget."
+      },
+      {
+        "title": "Security & Safety",
+        "description": "Approving security, safety, and civil defense plans and permits for various facilities."
+      },
+      {
+        "title": "Interior Design",
+        "description": "Designing interior spaces that combine elegance and comfort and meet our clients' aspirations."
+      }
+    ]
   },
   "contact": {
     "title": "Contact Us",
-    "name": "Name",
-    "email": "Email",
-    "message": "Message",
-    "submit": "Submit"
+    "subtitle": "We are here to answer your inquiries and meet your requests. Do not hesitate to contact us via the form below or using the contact information.",
+    "infoTitle": "Contact Information",
+    "addressTitle": "Address",
+    "addressDesc": "Riyadh, Kingdom of Saudi Arabia",
+    "emailTitle": "Email",
+    "phoneTitle": "Phone Number",
+    "formTitle": "Send a Message",
+    "name": "Full Name",
+    "namePlaceholder": "Enter your name",
+    "email": "Email Address",
+    "emailPlaceholder": "your@email.com",
+    "serviceType": "Service Type",
+    "serviceSelect": "Select Required Service",
+    "other": "Other",
+    "message": "Your Message",
+    "messagePlaceholder": "How can we help you?",
+    "submit": "Send Message"
+  },
+  "portals": {
+    "clientTitle": "Client Dashboard",
+    "clientWelcome": "Welcome to the 26i Engineering Consultations client portal.",
+    "adminTitle": "Admin Dashboard",
+    "adminWelcome": "Welcome to the 26i Engineering Consultations admin dashboard."
   },
   "footer": {
     "rights": "All rights reserved © 2026 for 26i Engineering Consultations"
