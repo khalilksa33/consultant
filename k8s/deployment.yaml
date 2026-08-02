@@ -1,38 +1,38 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: al-diwan-backend
+  name: 26i-consult-backend
   labels:
-    app: al-diwan-backend
+    app: 26i-consult-backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: al-diwan-backend
+      app: 26i-consult-backend
   template:
     metadata:
       labels:
-        app: al-diwan-backend
+        app: 26i-consult-backend
     spec:
       containers:
       - name: backend
-        image: ghcr.io/khalilksa33/al-diwan-backend:latest
+        image: ghcr.io/khalilksa33/26i-consult-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 5000
         env:
         - name: MONGODB_URI
-          value: "mongodb://mongodb:27017/al_diwan"
+          value: "mongodb://mongodb:27017/26i-consult"
         - name: JWT_SECRET
           value: "super_secret_jwt_key_26i_consulting_app"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: al-diwan-backend-service
+  name: 26i-consult-backend-service
 spec:
   selector:
-    app: al-diwan-backend
+    app: 26i-consult-backend
   ports:
     - protocol: TCP
       port: 5000
@@ -41,37 +41,37 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: al-diwan-frontend
+  name: 26i-consult-frontend
   labels:
-    app: al-diwan-frontend
+    app: 26i-consult-frontend
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: al-diwan-frontend
+      app: 26i-consult-frontend
   template:
     metadata:
       labels:
-        app: al-diwan-frontend
+        app: 26i-consult-frontend
     spec:
       containers:
       - name: frontend
-        image: ghcr.io/khalilksa33/al-diwan-frontend:latest
+        image: ghcr.io/khalilksa33/26i-consult-frontend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://al-diwan-backend-service:5000"
+          value: "http://26i-consult-backend-service:5000"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: al-diwan-frontend-service
+  name: 26i-consult-frontend-service
 spec:
   type: LoadBalancer
   selector:
-    app: al-diwan-frontend
+    app: 26i-consult-frontend
   ports:
     - protocol: TCP
       port: 80
