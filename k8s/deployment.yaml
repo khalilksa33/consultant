@@ -29,7 +29,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: 26i-consult-backend-service
+  name: backend-service-26i
 spec:
   selector:
     app: 26i-consult-backend
@@ -62,12 +62,12 @@ spec:
         - containerPort: 3000
         env:
         - name: NEXT_PUBLIC_API_URL
-          value: "http://26i-consult-backend-service:5000"
+          value: "http://backend-service-26i:5000"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: 26i-consult-frontend-service
+  name: frontend-service-26i
 spec:
   type: LoadBalancer
   selector:
