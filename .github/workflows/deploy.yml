@@ -85,8 +85,8 @@ jobs:
           EOF
           
           # Stream the updated yaml file to kubectl on Host B over SSH
-          cat k8s/deployment.yaml | ssh ssh-erp.26i.uk "kubectl apply -f -"
+          cat k8s/deployment.yaml | ssh ssh-erp.26i.uk "sudo kubectl apply -f -"
           
           # Verify rollouts
-          ssh ssh-erp.26i.uk "kubectl rollout status deployment/26i-consult-backend"
-          ssh ssh-erp.26i.uk "kubectl rollout status deployment/26i-consult-frontend"
+          ssh ssh-erp.26i.uk "sudo kubectl rollout status deployment/26i-consult-backend"
+          ssh ssh-erp.26i.uk "sudo kubectl rollout status deployment/26i-consult-frontend"
