@@ -78,15 +78,15 @@ jobs:
           
           # Setup SSH to use Cloudflare proxy
           cat << EOF > ~/.ssh/config
-          Host ssh-cloud.26i.uk
+          Host ssh-erp.26i.uk
             ProxyCommand cloudflared access ssh --hostname %h --service-token-id $CF_ID --service-token-secret $CF_SECRET
             StrictHostKeyChecking no
             User $SSH_USER
           EOF
           
-          # Stream the updated yaml file to kubectl on Host C over SSH
-          cat k8s/deployment.yaml | ssh ssh-cloud.26i.uk "kubectl apply -f -"
+          # Stream the updated yaml file to kubectl on Host B over SSH
+          cat k8s/deployment.yaml | ssh ssh-erp.26i.uk "kubectl apply -f -"
           
           # Verify rollouts
-          ssh ssh-cloud.26i.uk "kubectl rollout status deployment/26i-consult-backend"
-          ssh ssh-cloud.26i.uk "kubectl rollout status deployment/26i-consult-frontend"
+          ssh ssh-erp.26i.uk "kubectl rollout status deployment/26i-consult-backend"
+          ssh ssh-erp.26i.uk "kubectl rollout status deployment/26i-consult-frontend"
