@@ -86,8 +86,8 @@ jobs:
           EOF
           
           # Stream the updated yaml file to kubectl on Host B over SSH
-          cat k8s/deployment.yaml | ssh $SSH_HOST_NAME "sudo kubectl apply -f -"
+          cat k8s/deployment.yaml | ssh $SSH_HOST_NAME "sudo k3s kubectl apply -f -"
           
           # Verify rollouts
-          ssh $SSH_HOST_NAME "sudo kubectl rollout status deployment/26i-consult-backend"
-          ssh $SSH_HOST_NAME "sudo kubectl rollout status deployment/26i-consult-frontend"
+          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-backend"
+          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-frontend"
