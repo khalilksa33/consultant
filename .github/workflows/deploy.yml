@@ -89,5 +89,9 @@ jobs:
           cat k8s/deployment.yaml | ssh $SSH_HOST_NAME "sudo k3s kubectl apply -f -"
           
           # Verify rollouts
+          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/mongodb || true"
           ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-backend"
           ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-frontend"
+
+          # Seed database
+          ssh $SSH_HOST_NAME "sudo k3s kubectl exec deploy/26i-consult-backend -- node scripts/seed.js"
