@@ -74,5 +74,5 @@ spec:
     app: 26i-consult-frontend
   ports:
     - protocol: TCP
-      port: 80
+      port: 3000
       targetPort: 3000
