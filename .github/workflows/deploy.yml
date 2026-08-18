@@ -44,6 +44,8 @@ jobs:
         with:
           context: ./frontend
           push: true
+          build-args: |
+            NEXT_PUBLIC_API_URL=http://backend-service-26i:5000
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-frontend:latest
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-frontend:${{ github.sha }}
