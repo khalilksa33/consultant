@@ -106,5 +106,32 @@
   },
   "footer": {
     "rights": "All rights reserved © 2026 for 26i Engineering Consultations"
+  },
+  "projects": {
+    "myProjects": "My Projects",
+    "allProjects": "All Projects",
+    "noProjects": "No projects registered currently.",
+    "createProject": "Create Project",
+    "editProject": "Edit Project",
+    "title": "Project Title",
+    "description": "Description",
+    "client": "Client",
+    "selectClient": "Select a Client",
+    "status": "Status",
+    "progress": "Progress",
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "errorFetching": "Error fetching projects",
+    "errorSaving": "Error saving project",
+    "actions": "Actions",
+    "statusOptions": {
+      "Pending": "Pending",
+      "In Design": "In Design",
+      "Under Review": "Under Review",
+      "Permitting": "Permitting",
+      "Supervision": "Supervision",
+      "Completed": "Completed"
+    }
   }
 }

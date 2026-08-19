@@ -106,5 +106,32 @@
   },
   "footer": {
     "rights": "جميع الحقوق محفوظة © 2026 لشركة 26i للاستشارات الهندسية"
+  },
+  "projects": {
+    "myProjects": "مشاريعي",
+    "allProjects": "جميع المشاريع",
+    "noProjects": "لا يوجد مشاريع مسجلة حالياً.",
+    "createProject": "إنشاء مشروع",
+    "editProject": "تعديل المشروع",
+    "title": "عنوان المشروع",
+    "description": "الوصف",
+    "client": "العميل",
+    "selectClient": "اختر العميل",
+    "status": "الحالة",
+    "progress": "نسبة الإنجاز",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "loading": "جاري التحميل...",
+    "errorFetching": "خطأ في جلب المشاريع",
+    "errorSaving": "خطأ في حفظ المشروع",
+    "actions": "الإجراءات",
+    "statusOptions": {
+      "Pending": "قيد الانتظار",
+      "In Design": "في مرحلة التصميم",
+      "Under Review": "قيد المراجعة",
+      "Permitting": "استخراج التراخيص",
+      "Supervision": "تحت الإشراف",
+      "Completed": "مكتمل"
+    }
   }
 }
