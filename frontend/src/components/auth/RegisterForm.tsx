@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginForm({ dict, lang }: { dict: any; lang: string }) {
+export default function RegisterForm({ dict, lang }: { dict: any; lang: string }) {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -18,21 +19,17 @@ export default function LoginForm({ dict, lang }: { dict: any; lang: string }) {
     setError('');
 
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         localStorage.setItem('userInfo', JSON.stringify(data));
-        if (data.role === 'admin') {
-          router.push(`/${lang}/admin`);
-        } else {
-          router.push(`/${lang}/client`);
-        }
+        router.push(`/${lang}/client`); // Registers default to client
       } else {
         setError(dict.error || data.message);
       }
@@ -52,6 +49,20 @@ export default function LoginForm({ dict, lang }: { dict: any; lang: string }) {
       )}
       
       <div>
+        <label htmlFor="name" className="block text-sm font-medium text-brand-slate mb-2">
+          {dict.name}
+        </label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full px-4 py-3 rounded border border-brand-mist focus:border-brand-orange focus:ring-1 focus:ring-brand-orange outline-none transition-all bg-brand-ivory/30"
+          required
+        />
+      </div>
+
+      <div>
         <label htmlFor="email" className="block text-sm font-medium text-brand-slate mb-2">
           {dict.email}
         </label>
@@ -67,14 +78,9 @@ export default function LoginForm({ dict, lang }: { dict: any; lang: string }) {
       </div>
       
       <div>
-        <div className="flex justify-between items-center mb-2">
-          <label htmlFor="password" className="block text-sm font-medium text-brand-slate">
-            {dict.password}
-          </label>
-          <Link href={`/${lang}/forgot-password`} className="text-sm text-brand-orange hover:underline">
-            {dict.forgotPassword}
-          </Link>
-        </div>
+        <label htmlFor="password" className="block text-sm font-medium text-brand-slate mb-2">
+          {dict.password}
+        </label>
         <div className="relative">
           <input
             type={showPassword ? "text" : "password"}
@@ -109,12 +115,12 @@ export default function LoginForm({ dict, lang }: { dict: any; lang: string }) {
         disabled={loading}
         className="w-full bg-brand-orange text-white font-bold py-3 px-4 rounded hover:bg-opacity-90 transition-colors shadow-sm disabled:opacity-50"
       >
-        {loading ? '...' : dict.submit}
+        {loading ? '...' : dict.registerSubmit}
       </button>
 
       <div className="text-center mt-4 text-brand-slate text-sm">
-        <Link href={`/${lang}/register`} className="hover:text-brand-orange hover:underline font-medium">
-          {dict.noAccount}
+        <Link href={`/${lang}/login`} className="hover:text-brand-orange hover:underline font-medium">
+          {dict.haveAccount}
         </Link>
       </div>
     </form>

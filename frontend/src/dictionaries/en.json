@@ -99,10 +99,24 @@
   },
   "auth": {
     "login": "Login",
+    "register": "Sign Up",
+    "name": "Full Name",
     "email": "Email Address",
     "password": "Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
     "submit": "Sign In",
-    "error": "Invalid email or password"
+    "registerSubmit": "Create Account",
+    "error": "Invalid email or password",
+    "forgotPassword": "Forgot Password?",
+    "sendResetLink": "Send Reset Link",
+    "resetPassword": "Reset Password",
+    "noAccount": "Don't have an account? Sign Up",
+    "haveAccount": "Already have an account? Login",
+    "passwordMismatch": "Passwords do not match",
+    "resetSuccess": "Password has been reset successfully",
+    "linkSent": "Reset link has been generated (check server logs)",
+    "backToLogin": "Back to Login"
   },
   "footer": {
     "rights": "All rights reserved © 2026 for 26i Engineering Consultations"
