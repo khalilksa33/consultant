@@ -84,8 +84,9 @@ jobs:
             User $SSH_USER
           EOF
 
-          # Copy docker-compose file to VPS
+          # Copy docker-compose and nginx config to VPS
           scp docker-compose.yml $SSH_HOST_NAME:~/docker-compose.yml
+          scp -r nginx $SSH_HOST_NAME:~/nginx
 
           # Run deployment commands on VPS
           ssh $SSH_HOST_NAME << 'ENDSSH'
