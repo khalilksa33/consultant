@@ -1,4 +1,4 @@
-name: Build and Deploy to K8s
+name: Build and Deploy to VPS
 
 on:
   push:
@@ -27,6 +27,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up QEMU (for ARM cross-compilation)
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -35,6 +38,7 @@ jobs:
         with:
           context: ./backend
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-backend:latest
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-backend:${{ github.sha }}
@@ -44,6 +48,7 @@ jobs:
         with:
           context: ./frontend
           push: true
+          platforms: linux/amd64,linux/arm64
           build-args: |
             NEXT_PUBLIC_API_URL=http://backend:5000
           tags: |
@@ -71,29 +76,32 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
+
           # Setup SSH (Standard direct connection to OCI public IP)
           cat << EOF > ~/.ssh/config
           Host $SSH_HOST_NAME
             StrictHostKeyChecking no
             User $SSH_USER
           EOF
-          
+
           # Copy docker-compose file to VPS
           scp docker-compose.yml $SSH_HOST_NAME:~/docker-compose.yml
-          
+
           # Run deployment commands on VPS
           ssh $SSH_HOST_NAME << 'ENDSSH'
+            # Log in to GHCR to pull private images
+            echo "$GITHUB_TOKEN" | docker login ghcr.io -u khalilksa33 --password-stdin || true
+
             # Stop existing containers if any
             sudo docker compose -f ~/docker-compose.yml down || true
-            
+
             # Pull latest images
             sudo docker compose -f ~/docker-compose.yml pull
-            
+
             # Start containers
             sudo docker compose -f ~/docker-compose.yml up -d
-            
+
             # Wait for backend to be ready, then seed database
-            sleep 10
+            sleep 15
             sudo docker compose -f ~/docker-compose.yml exec -T backend node scripts/seed.js
           ENDSSH
