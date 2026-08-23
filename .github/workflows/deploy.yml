@@ -45,55 +45,55 @@ jobs:
           context: ./frontend
           push: true
           build-args: |
-            NEXT_PUBLIC_API_URL=http://backend-service-26i:5000
+            NEXT_PUBLIC_API_URL=http://backend:5000
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-frontend:latest
             ${{ env.REGISTRY }}/${{ env.OWNER }}/26i-consult-frontend:${{ github.sha }}
 
-  deploy-to-k8s:
+  deploy-to-vps:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install cloudflared
+      - name: Update docker-compose with new image tags
         run: |
-          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
-          sudo dpkg -i cloudflared.deb
+          sed -i 's|ghcr.io/khalilksa33/26i-consult-backend:.*|ghcr.io/khalilksa33/26i-consult-backend:${{ github.sha }}|g' docker-compose.yml
+          sed -i 's|ghcr.io/khalilksa33/26i-consult-frontend:.*|ghcr.io/khalilksa33/26i-consult-frontend:${{ github.sha }}|g' docker-compose.yml
 
-      - name: Update deployment with new image tags
-        run: |
-          sed -i 's|ghcr.io/khalilksa33/26i-consult-backend:.*|ghcr.io/khalilksa33/26i-consult-backend:${{ github.sha }}|g' k8s/deployment.yaml
-          sed -i 's|ghcr.io/khalilksa33/26i-consult-frontend:.*|ghcr.io/khalilksa33/26i-consult-frontend:${{ github.sha }}|g' k8s/deployment.yaml
-
-      - name: Configure SSH and Deploy
+      - name: Configure SSH and Deploy via Docker Compose
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST_NAME: ${{ secrets.SSH_HOST_NAME }}
-          TUNNEL_SERVICE_TOKEN_ID: ${{ secrets.CF_CLIENT_ID }}
-          TUNNEL_SERVICE_TOKEN_SECRET: ${{ secrets.CF_CLIENT_SECRET }}
         run: |
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           
-          # Setup SSH to use Cloudflare proxy
+          # Setup SSH (Standard direct connection to OCI public IP)
           cat << EOF > ~/.ssh/config
           Host $SSH_HOST_NAME
-            ProxyCommand env TUNNEL_SERVICE_TOKEN_ID=\$TUNNEL_SERVICE_TOKEN_ID TUNNEL_SERVICE_TOKEN_SECRET=\$TUNNEL_SERVICE_TOKEN_SECRET cloudflared access ssh --hostname %h --service-token-id \$TUNNEL_SERVICE_TOKEN_ID --service-token-secret \$TUNNEL_SERVICE_TOKEN_SECRET
             StrictHostKeyChecking no
             User $SSH_USER
           EOF
           
-          # Stream the updated yaml file to kubectl on Host B over SSH
-          cat k8s/deployment.yaml | ssh $SSH_HOST_NAME "sudo k3s kubectl apply -f -"
+          # Copy docker-compose file to VPS
+          scp docker-compose.yml $SSH_HOST_NAME:~/docker-compose.yml
           
-          # Verify rollouts
-          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/mongodb || true"
-          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-backend"
-          ssh $SSH_HOST_NAME "sudo k3s kubectl rollout status deployment/26i-consult-frontend"
-
-          # Seed database
-          ssh $SSH_HOST_NAME "sudo k3s kubectl exec deploy/26i-consult-backend -- node scripts/seed.js"
+          # Run deployment commands on VPS
+          ssh $SSH_HOST_NAME << 'ENDSSH'
+            # Stop existing containers if any
+            sudo docker compose -f ~/docker-compose.yml down || true
+            
+            # Pull latest images
+            sudo docker compose -f ~/docker-compose.yml pull
+            
+            # Start containers
+            sudo docker compose -f ~/docker-compose.yml up -d
+            
+            # Wait for backend to be ready, then seed database
+            sleep 10
+            sudo docker compose -f ~/docker-compose.yml exec -T backend node scripts/seed.js
+          ENDSSH
