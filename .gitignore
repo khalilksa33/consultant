@@ -1,0 +1,15 @@
+# local secrets
+.env
+**/.env
+
+# dependencies
+node_modules
+
+# build output
+.next
+out
+build
+dist
+
+# local tooling
+.DS_Store

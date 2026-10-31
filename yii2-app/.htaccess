@@ -1,0 +1,11 @@
+RewriteEngine On
+
+# If the app is served from the project root, send requests to the web folder.
+RewriteCond %{REQUEST_URI} !^/web/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^.*$ web/$0 [L]
+
+# Force HTTPS when available
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
