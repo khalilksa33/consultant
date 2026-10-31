@@ -1,4 +1,4 @@
-name: Build and Deploy to VPS
+name: Deploy MERN to VPS
 
 on:
   push:
@@ -67,7 +67,7 @@ jobs:
           sed -i 's|ghcr.io/khalilksa33/26i-consult-backend:.*|ghcr.io/khalilksa33/26i-consult-backend:${{ github.sha }}|g' docker-compose.yml
           sed -i 's|ghcr.io/khalilksa33/26i-consult-frontend:.*|ghcr.io/khalilksa33/26i-consult-frontend:${{ github.sha }}|g' docker-compose.yml
 
-      - name: Configure SSH and Deploy via Docker Compose
+      - name: Configure SSH and deploy MERN app via Docker Compose
         env:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
