@@ -4,17 +4,46 @@ $projectRoot = Resolve-Path (Join-Path $PSScriptRoot '..\..')
 $localAppRoot = Join-Path $projectRoot 'yii2-app'
 $envFile = Join-Path $projectRoot '.env'
 
-if (-not (Test-Path $envFile)) {
-    throw "Missing .env file at $envFile"
+$settings = @{}
+$envKeys = @(
+    'HOSTINGER_FTP_SERVER',
+    'HOSTINGER_FTP_USERNAME',
+    'HOSTINGER_FTP_PASSWORD',
+    'HOSTINGER_REMOTE_DIR',
+    'DB_HOST',
+    'DB_PORT',
+    'DB_NAME',
+    'DB_USER',
+    'DB_PASSWORD',
+    'SMTP_HOST',
+    'SMTP_PORT',
+    'SMTP_USERNAME',
+    'SMTP_PASSWORD',
+    'SMTP_ENCRYPTION',
+    'SMTP_FROM_EMAIL',
+    'SMTP_FROM_NAME',
+    'ADMIN_EMAIL',
+    'ADMIN_PASSWORD',
+    'APP_BASE_URL',
+    'COOKIE_VALIDATION_KEY',
+    'YII_ENV'
+)
+
+foreach ($key in $envKeys) {
+    $value = [Environment]::GetEnvironmentVariable($key)
+    if (-not [string]::IsNullOrWhiteSpace($value)) {
+        $settings[$key] = $value.Trim()
+    }
 }
 
-$settings = @{}
-Get-Content $envFile | ForEach-Object {
-    if ($_ -match '^(.*?)=(.*)$') {
-        $key = $matches[1].Trim()
-        $value = $matches[2].Trim()
-        if (-not [string]::IsNullOrWhiteSpace($key)) {
-            $settings[$key] = $value
+if (Test-Path $envFile) {
+    Get-Content $envFile | ForEach-Object {
+        if ($_ -match '^(.*?)=(.*)$') {
+            $key = $matches[1].Trim()
+            $value = $matches[2].Trim()
+            if (-not [string]::IsNullOrWhiteSpace($key) -and -not $settings.ContainsKey($key)) {
+                $settings[$key] = $value
+            }
         }
     }
 }

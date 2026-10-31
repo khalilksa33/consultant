@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - 'docker-compose.yml'
+      - 'nginx/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
 
 env:
   REGISTRY: ghcr.io
@@ -58,6 +65,7 @@ jobs:
   deploy-to-vps:
     needs: build-and-push
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -72,37 +80,30 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_USER: ${{ secrets.SSH_USERNAME }}
           SSH_HOST_NAME: ${{ secrets.SSH_HOST_NAME }}
+          GHCR_TOKEN: ${{ secrets.GH_PAT }}
         run: |
+          set -e
           mkdir -p ~/.ssh
           echo "$SSH_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
 
-          # Setup SSH (Standard direct connection to OCI public IP)
-          cat << EOF > ~/.ssh/config
+          cat <<EOF > ~/.ssh/config
           Host $SSH_HOST_NAME
-            StrictHostKeyChecking no
+            HostName $SSH_HOST_NAME
             User $SSH_USER
+            StrictHostKeyChecking no
+            ConnectTimeout=20
+            BatchMode=yes
           EOF
 
-          # Copy docker-compose and nginx config to VPS
-          scp docker-compose.yml $SSH_HOST_NAME:~/docker-compose.yml
-          scp -r nginx $SSH_HOST_NAME:~/nginx
+          scp -o ConnectTimeout=20 -o StrictHostKeyChecking=no docker-compose.yml $SSH_HOST_NAME:~/docker-compose.yml
+          scp -o ConnectTimeout=20 -o StrictHostKeyChecking=no -r nginx $SSH_HOST_NAME:~/nginx
 
-          # Run deployment commands on VPS
-          ssh $SSH_HOST_NAME << 'ENDSSH'
-            # Log in to GHCR to pull private images
-            echo "$GITHUB_TOKEN" | docker login ghcr.io -u khalilksa33 --password-stdin || true
-
-            # Stop existing containers if any
+          ssh -o ConnectTimeout=20 -o StrictHostKeyChecking=no $SSH_HOST_NAME <<ENDSSH
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u khalilksa33 --password-stdin
             sudo docker compose -f ~/docker-compose.yml down || true
-
-            # Pull latest images
             sudo docker compose -f ~/docker-compose.yml pull
-
-            # Start containers
             sudo docker compose -f ~/docker-compose.yml up -d
-
-            # Wait for backend to be ready, then seed database
             sleep 15
             sudo docker compose -f ~/docker-compose.yml exec -T backend node scripts/seed.js
           ENDSSH
